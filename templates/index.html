@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OCR App</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+  </head>
+  <body>
+    <form id="image-form" enctype="multipart/form-data">
+      <input type="file" name="image">
+      <button type="submit">Extract Text</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+      const form = document.getElementById("image-form");
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        // Get the selected image
+        const image = form.querySelector("input[type=file]").files[0];
+        // Create a FormData object to send the image to the server
+        const formData = new FormData();
+        formData.append("image", image);
+        // Send a request to the server
+        fetch("/image_upload", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Display the extracted text in the result div
+            const result = document.getElementById("result");
+            result.textContent = data.text;
+          });
+      });
+    </script>
+  </body>
+</html>
+
